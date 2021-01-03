@@ -14,38 +14,44 @@ botaoAdicionar.addEventListener("click", function(){
     xhr.addEventListener("load", function(){
         //exibe o texto da resposta
         //console.log(xhr.responseText);
-        
+        var err= document.querySelector("#erro-ajax");
+        if(xhr.status == 200){
+            err.classList.add("invisivel");
+                    //pegando o objeto json e armazenando
+            var resposta = xhr.responseText;
 
-        //pegando o objeto json e armazenando
-        var resposta = xhr.responseText;
+                //exibe o tipo do objeto
+                //console.log(typeof resposta);
 
-        //exibe o tipo do objeto
-        //console.log(typeof resposta);
+                //vai ler o objeto json e devolve um objeto javascript
+            var pacientes = JSON.parse(resposta);
+                //exibe o tipo do objeto
+                //console.log(pacientes);
+                    
+                // para cada paciente ..
+            pacientes.forEach(function (paciente) {        
+                adicionaPacienteNaTabela(paciente)
+                    
+            });
 
-        //vai ler o objeto json e devolve um objeto javascript
-        var pacientes = JSON.parse(resposta);
-        //exibe o tipo do objeto
-        //console.log(pacientes);
+                //classificando os novos pacientes, pois o json não possuia o atributo classificação
 
-        // para cada paciente ..
-       pacientes.forEach(function (paciente) {        
-           adicionaPacienteNaTabela(paciente)
+            var pacientes = document.querySelectorAll(".paciente");
             
-       });
+            pacientes.forEach(function (paciente) {
+                tdclassificacao = paciente.querySelector(".info-classificacao");
+                tdimc = paciente.querySelector(".info-imc");
 
-
-       //classificando os novos pacientes, pois o json não possuia o atributo classificação
-
-      var pacientes = document.querySelectorAll(".paciente");
-       
-      pacientes.forEach(function (paciente) {
-          tdclassificacao = paciente.querySelector(".info-classificacao");
-          tdimc = paciente.querySelector(".info-imc");
-
-          if(tdclassificacao.textContent==0){
-            tdclassificacao.textContent = classificaImc(tdimc.textContent);
-          }
-      });
+                if(tdclassificacao.textContent==0){
+                    tdclassificacao.textContent = classificaImc(tdimc.textContent);
+                }
+            });
+        }else{
+            console.log(xhr.status);
+            console.log(xhr.responseText);
+            
+            err.classList.remove("invisivel");
+        }
 
     });
 
